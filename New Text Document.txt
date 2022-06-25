@@ -1,0 +1,5 @@
+  <input type = "range" min="0" max="100" onchange="rangevalue.value=value" />
+	<output id="rangevalue">50</output>
+
+
+https://usejquery.com/css/css-range-slider-bars/

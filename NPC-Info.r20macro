@@ -1,0 +1,465 @@
+!script {{
+	--/|Version 0.02
+	--#sourcetoken|@{selected|token_id}
+	--#whisper|gm
+	--#buttonFontSize|12px
+	--&SpaceCell|[td]&nbsp;&nbsp;[/td]
+	--&Put_Four_Spaces|&nbsp;&nbsp;&nbsp;&nbsp;
+	--&RefrenceMacroSheet|DM - NPC Utilities
+	--&ShowInfo_BTN|[c][t width=100%][tr][td align=center][rbutton]NPC Show Info::Main_Function[/rbutton][/td][/tr][/t][/c]
+	
+	--/|NPC "Checks Build Buttons"
+		--&str_check_btn|[rbutton]STR::NPC_Ability_Check;Strength[/rbutton]
+		--&dex_check_btn|[rbutton]DEX::NPC_Ability_Check;Dexterity[/rbutton]
+		--&con_check_btn|[rbutton]CON::NPC_Ability_Check;Constitution[/rbutton]
+		--&int_check_btn|[rbutton]INT::NPC_Ability_Check;Intelligence[/rbutton]
+		--&wis_check_btn|[rbutton]WIS::NPC_Ability_Check;Wisdom[/rbutton]
+		--&cha_check_btn|[rbutton]CHA::NPC_Ability_Check;Charisma[/rbutton]
+		--&abilityChk_BTNs|[t width=100% align=center][tr]
+								[td][&str_check_btn][/td]
+								[td][&dex_check_btn][/td]
+								[td][&con_check_btn][/td]
+								[td][&int_check_btn][/td]
+								[td][&wis_check_btn][/td]
+								[td][&cha_check_btn][/td]
+						[/tr][/t]
+
+	--/|NPC "Saves Build Buttons"
+		--&str_save_btn|[rbutton:#fff:#f00]STR::NPC_Save_Check;Strength[/rbutton]
+		--&dex_save_btn|[rbutton:#fff:#f00]DEX::NPC_Save_Check;Dexterity[/rbutton]
+		--&con_save_btn|[rbutton:#fff:#f00]CON::NPC_Save_Check;Constitution[/rbutton]
+		--&int_save_btn|[rbutton:#fff:#f00]INT::NPC_Save_Check;Intelligence[/rbutton]
+		--&wis_save_btn|[rbutton:#fff:#f00]WIS::NPC_Save_Check;Wisdom[/rbutton]
+		--&cha_save_btn|[rbutton:#fff:#f00]CHA::NPC_Save_Check;Charisma[/rbutton]
+		--&SaveChk_BTNs|[t width=100% align=center][tr]
+								[td][&str_save_btn][/td]
+								[td][&dex_save_btn][/td]
+								[td][&con_save_btn][/td]
+								[td][&int_save_btn][/td]
+								[td][&wis_save_btn][/td]
+								[td][&cha_save_btn][/td]
+						[/tr][/t]
+
+	
+	--/|NPC "Skills Build Buttons"
+		--&acrobatics_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Acrobatics[&Put_Four_Spaces]::NPC_Skill_Check;acrobatics[/rbutton]
+		--&animal_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Animal[&Put_Four_Spaces]::NPC_Skill_Check;animal[/rbutton]
+		--&arcana_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Arcana[&Put_Four_Spaces]::NPC_Skill_Check;arcana[/rbutton]
+		--&athletics_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Athletics[&Put_Four_Spaces]::NPC_Skill_Check;athletics[/rbutton]
+		--&deception_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Deception[&Put_Four_Spaces]::NPC_Skill_Check;deception[/rbutton]
+		--&history_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]History[&Put_Four_Spaces]::NPC_Skill_Check;history[/rbutton]
+		--&insight_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Insight[&Put_Four_Spaces]::NPC_Skill_Check;insight[/rbutton]
+		--&intimidation_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Intimidation[&Put_Four_Spaces]::NPC_Skill_Check;intimidation[/rbutton]
+		--&investigation_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Investigation[&Put_Four_Spaces]::NPC_Skill_Check;investigation[/rbutton]
+		--&medicine_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Medicine[&Put_Four_Spaces]::NPC_Skill_Check;medicine[/rbutton]
+		--&nature_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Nature[&Put_Four_Spaces]::NPC_Skill_Check;nature[/rbutton]
+		--&perception_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Perception[&Put_Four_Spaces]::NPC_Skill_Check;perception[/rbutton]
+		--&performance_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Performance[&Put_Four_Spaces]::NPC_Skill_Check;performance[/rbutton]
+		--&persuasion_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Persuasion[&Put_Four_Spaces]::NPC_Skill_Check;persuasion[/rbutton]
+		--&religion_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Religion[&Put_Four_Spaces]::NPC_Skill_Check;religion[/rbutton]
+		--&sleight_of_hand_skill_btn|[rbutton:#fff:#f00][&Put_Two_Spaces]Sleight of hand[&Put_Two_Spaces]::NPC_Skill_Check;sleight_of_hand[/rbutton]
+		--&stealth_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Stealth[&Put_Four_Spaces]::NPC_Skill_Check;stealth[/rbutton]
+		--&survival_skill_btn|[rbutton:#fff:#f00][&Put_Four_Spaces]Survival[&Put_Four_Spaces]::NPC_Skill_Check;survival[/rbutton]
+		--&SkillChk_BTNs|[t width=100% align=center]
+							[tr][td width=50% align=center][&acrobatics_skill_btn][/td][td width=50% align=center][&animal_skill_btn][/td][/tr]
+							[tr][td width=50% align=center][&arcana_skill_btn][/td][td width=50% align=center][&athletics_skill_btn][/td][/tr]
+							[tr][td width=50% align=center][&deception_skill_btn][/td][td width=50% align=center][&history_skill_btn][/td][/tr]
+							[tr][td width=50% align=center][&insight_skill_btn][/td][td width=50% align=center][&intimidation_skill_btn][/td][/tr]
+							[tr][td width=50% align=center][&investigation_skill_btn][/td][td width=50% align=center][&medicine_skill_btn][/td][/tr]
+							[tr][td width=50% align=center][&nature_skill_btn][/td][td width=50% align=center][&perception_skill_btn][/td][/tr]
+							[tr][td width=50% align=center][&performance_skill_btn][/td][td width=50% align=center][&persuasion_skill_btn][/td][/tr]
+							[tr][td width=50% align=center][&religion_skill_btn][/td][td width=50% align=center][&sleight_of_hand_skill_btn][/td][/tr]
+							[tr][td width=50% align=center][&stealth_skill_btn][/td][td width=50% align=center][&survival_skill_btn][/td][/tr]
+						[/t]
+						
+	--/|NPC "Skills Build Buttons"
+		--&SkillChkBTNColors|#fff:#3ea950
+		--&acrobatics_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;acrobatics[/rbutton]
+		--&animal_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;animal[/rbutton]
+		--&arcana_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;arcana[/rbutton]
+		--&athletics_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;athletics[/rbutton]
+		--&deception_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;deception[/rbutton]
+		--&history_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;history[/rbutton]
+		--&insight_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;insight[/rbutton]
+		--&intimidation_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;intimidation[/rbutton]
+		--&investigation_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;investigation[/rbutton]
+		--&medicine_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;medicine[/rbutton]
+		--&nature_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;nature[/rbutton]
+		--&perception_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;perception[/rbutton]
+		--&performance_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;performance[/rbutton]
+		--&persuasion_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;persuasion[/rbutton]
+		--&religion_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;religion[/rbutton]
+		--&sleight_of_hand_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;sleight_of_hand[/rbutton]
+		--&stealth_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;stealth[/rbutton]
+		--&survival_skill_btn_B|[rbutton:[&SkillChkBTNColors]]Roll Check::NPC_Skill_Check;survival[/rbutton]
+		--&SkillChk_BTNs_B|[t width=100% align=center]
+							[tr style="background-image:url(https://d3clqjduf2gvxg.cloudfront.net/images/background.png);"]
+								[td rowspan=18]&nbsp;&nbsp;[/td]
+								[td align=right][&acrobatics_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Acrobatics[/td]
+								[td rowspan=18]&nbsp;&nbsp;[/td]
+							[/tr]
+							[tr]
+								[td align=right][&animal_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Animal[/td]
+							[/tr]
+							[tr style="background-image:url(https://d3clqjduf2gvxg.cloudfront.net/images/background.png);"]
+								[td align=right][&arcana_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Arcana[td]
+							[/tr]
+							[tr]
+								[td align=right][&athletics_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Athletics[/td]
+							[/tr]
+							[tr style="background-image:url(https://d3clqjduf2gvxg.cloudfront.net/images/background.png);"]
+								[td align=right][&deception_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Deception[/td]
+							[/tr]
+							[tr]
+								[td align=right][&history_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] History[/td]
+							[/tr]
+							[tr style="background-image:url(https://d3clqjduf2gvxg.cloudfront.net/images/background.png);"]
+								[td align=right][&insight_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Insight[/td]
+							[/tr]
+							[tr]
+								[td align=right][&intimidation_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Intimidation[/td]
+							[/tr]
+							[tr style="background-image:url(https://d3clqjduf2gvxg.cloudfront.net/images/background.png);"]
+								[td align=right][&investigation_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Investigation[/td]
+							[/tr]
+							[tr]
+								[td align=right][&medicine_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Medicine[/td]
+							[/tr]
+							[tr style="background-image:url(https://d3clqjduf2gvxg.cloudfront.net/images/background.png);"]
+								[td align=right][&nature_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Nature[/td]
+							[/tr]
+							[tr]
+								[td align=right][&perception_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Perception[/td]
+							[/tr]
+							[tr style="background-image:url(https://d3clqjduf2gvxg.cloudfront.net/images/background.png);"]
+								[td align=right][&performance_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Performance[/td]
+							[/tr]
+							[tr]
+								[td align=right][&persuasion_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Persuasion[/td]
+							[/tr]
+							[tr style="background-image:url(https://d3clqjduf2gvxg.cloudfront.net/images/background.png);"]
+								[td align=right][&religion_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Religion[/td]
+							[/tr]
+							[tr]
+								[td align=right][&sleight_of_hand_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Sleight of hand[/td]
+							[/tr]
+							[tr style="background-image:url(https://d3clqjduf2gvxg.cloudfront.net/images/background.png);"]
+								[td align=right][&stealth_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Stealth[/td]
+							[/tr]
+							[tr]
+								[td align=right][&survival_skill_btn_B][/td]
+								[td width=150 style="font-weight:bold;"] Survival[/td]
+							[/tr]
+						[/t]
+
+						
+	--/|NPC "Saves and ability checks"
+		--&NPC_Checks|[c][t width=100%][tr][&SpaceCell][td width=25%][button]&nbsp;Ability&nbsp;::~[&RefrenceMacroSheet]|Check-Ability[/button][/td]
+						[td width=25%][button]&nbsp;Skill&nbsp;::~[&RefrenceMacroSheet]|Check-Skill[/button][/td]
+						[td width=50%][button]&nbsp;SavingThrows&nbsp;::~[&RefrenceMacroSheet]|Check-Saves[/button][/td][&SpaceCell][/tr][/t][/c]
+
+	--/|NPC "Stats"
+        --&NPC_Stats|
+            [t width=100%  style="font-size:12px;"]
+                [tr]
+                    [td][b]Str[/b] [*S:strength] ([*S:strength_mod])[/td]
+                    [td][b]Dex[/b] [*S:dexterity] ([*S:dexterity_mod])[/td]
+                    [td][b]Con[/b] [*S:constitution] ([*S:constitution_mod])[/td]
+                [/tr][tr]
+                    [td][b]Int[/b] [*S:intelligence] ([*S:intelligence_mod])[/td]
+                    [td][b]Wis[/b] [*S:wisdom] ([*S:wisdom_mod])[/td]
+                    [td][b]Cha[/b] [*S:charisma] ([*S:charisma_mod])[/td]
+                [/tr][tr]
+                    [td][b]AC[/b] [*S:npc_ac][/td]
+                    [td][b]HP[/b][*S:t-bar1_value]/[*S:t-bar1_max][/td]
+                    [td][b]CR[/b] [*S:npc_challenge][/td]
+                [/tr]
+            [/t]	
+	
+	
+	--:Main_Function|
+		--&sheetURL|https://journal.roll20.net/character/[*S:character_id]
+		--#title|[*S:character_name]
+		--#leftsub|Movement
+		--#rightsub|[*S:npc_speed]
+		--#bodyFontSize|14px
+
+		--+|[t width=100%]
+				[tr]			
+					[&SpaceCell]
+					[td colspan=2 align=center valign=middle height=30][button]&nbsp;&nbsp;Open NPC Sheet&nbsp;&nbsp;::[&sheetURL][/button][/td]
+					[&SpaceCell]
+				[/tr][tr]			
+					[&SpaceCell]
+					[td rowspan=3][c][img height=150px width=150px ][*S:t-imgsrc][/img][/c][/td]
+					[td valign="middle" align="center" height=65px style="background-image:url(https://app.roll20.net/images/dndstyling/AC.svg); background-repeat:no-repeat; background-size:60px 60px; background-position: center center; font-size:22px; font-weight:bold;"][*S:npc_ac][/td]
+					[&SpaceCell]
+				[/tr][tr]
+					[&SpaceCell]				
+					[td align=center][b]Show PCs[/b][/td]
+					[&SpaceCell]
+				[/tr][tr]
+					[&SpaceCell]
+					[td align=center][rbutton]Image::ShowNPC_Image;Basic[/rbutton][br][br][rbutton]Handout::ShowNPC_Image;Detail[/rbutton][/td]
+					[&SpaceCell]
+				[/tr]
+			[/t]
+			
+		--+|[t width=100% style="font-size:12px;"]
+				[tr]
+					[td colspan=3 height=5px][/td]
+				[/tr][tr]
+					[&SpaceCell]
+					[td align=center][b]Creature Type[/b][hr][*S:npc_type][/td]
+					[&SpaceCell]
+				[/tr][tr]
+					[td colspan=3 height=5px][/td]
+				[/tr]
+			[/t]
+		--+|[t width=100% style="font-size:12px;"]
+				[tr]
+					[td colspan=3 height=5px][/td]
+				[/tr][tr]
+					[&SpaceCell]
+					[td align=center][b]Languages[/b][hr][*S:npc_languages][/td]
+					[&SpaceCell]
+				[/tr][tr]
+					[td colspan=3 height=5px][/td]
+				[/tr]
+			[/t]			
+		--+|[t width=100% style="font-size:12px;"]				
+				[tr]
+					[td colspan=3 height=5px][/td]
+				[/tr][tr]
+					[&SpaceCell]
+					[td][c][b]Ability Scores[/b][/c][hr][&NPC_Stats][/td]
+					[&SpaceCell]
+				[/tr][tr]
+					[td colspan=3 height=5px][/td]
+				[/tr]
+			[/t]
+		--+|[t width=100%]
+				[tr]
+					[td colspan=3 height=5px][/td]
+				[/tr][tr]
+					[&SpaceCell]
+					[td align=center][b]Ability Checks[/b][br][hr][&abilityChk_BTNs][/td]
+					[&SpaceCell]
+				[/tr][tr]
+					[td colspan=3 height=5px][/td]
+				[/tr][tr]
+					[&SpaceCell]
+					[td align=center][b]NPC Saves[/b][hr][&SaveChk_BTNs][/td]
+					[&SpaceCell]
+				[/tr][tr]
+					[td colspan=3 height=5px][/td]
+				[/tr][tr]
+					[&SpaceCell]
+					[td align=center][b]NPC Skill Checks[/b][hr][rbutton]Skill Checks::NPC_Skill_Checks[/rbutton] | [rbutton]Skill Checks new::NPC_Skill_Checks_B[/rbutton][/td]
+					[&SpaceCell]
+				[/tr][tr]
+					[td colspan=3 height=5px] [/td]
+				[/tr]
+			[/t]
+
+		--/|NPC "Qualities"
+			--?"[*S:npc_senses]" -nei ""|&NPC_Senses;+[tr][td width=5px] [/td][td valign=top align=right][b]Senses: [/b][/td][td width=5px] [/td][td] [*S:npc_senses][/td][td width=5px] [/td][/tr][tr][td colspan=5 height=5px][/td][/tr]
+			--?"[*S:npc_vulnerabilities]" -nei "" |&NPC_Vulnerabilities;+[tr][td] [/td][td valign=top][b]Vulnerabilities: [/b][/td][td width=5px] [/td][td] [*S:npc_vulnerabilities][/td][td] [/td][/tr][tr][td colspan=5 height=5px][/td][/tr]
+			--?"[*S:npc_resistances]" -nei "" |&NPC_Resistances;+[tr][td] [/td][td valign=top][b]Resistances: [/b][/td][td width=5px] [/td][td] [*S:npc_resistances][/td][td] [/td][/tr][tr][td colspan=5 height=5px][/td][/tr]
+			--?"[*S:npc_immunities]" -nei "" |&NPC_Immunities;+[tr][td] [/td][td valign=top][b]Immunities: [/b][/td][td width=5px] [/td][td] [*S:npc_immunities][/td][td] [/td][/tr][tr][td colspan=5 height=5px][/td][/tr]
+			--?"[*S:npc_condition_immunities]" -nei "" |&NPC_ConditionImmunities;+[tr][td] [/td][td valign=top][b]Condition[br]Immunities: [/b][/td][td width=5px] [/td][td] [*S:npc_condition_immunities][/td][td] [/td][/tr][tr][td colspan=5 height=5px][/td][/tr]
+			--&NPC_Qualities|+[/t]
+			--+|[t width=100% style="font-size:12px;"]
+					[tr][td colspan=5 height=5px][/td][/tr]
+                    [tr][td colspan=5][c][b]NPC Qualities[/b][/c][hr][/td][/tr]
+                    [&NPC_Senses][&NPC_Vulnerabilities][&NPC_Resistances][&NPC_Immunities][&NPC_ConditionImmunities]
+				[/t]
+			
+
+
+
+		--/|NPC "Actions"
+		--Rfirst|[*S:character_id];repeating_npcaction
+		--&NPCActions|
+		--?"[*R:name]" -ne "NoRepeatingAttributeLoaded"|[
+			--:NPC_Action_Display|
+			  --?"[*R:name]" -ne Multiattack|skip_multiattack
+			  --&Multiattack_Text|[b][*R:name][/b][*R:description][br]
+			  --^skip_ma_button|
+			  --:skip_multiattack|
+			  --&NPCActions|+ [button][*R:name]::~[*S:character_id]|[*R>npc_action][/button][br] 
+			  --:skip_ma_button|
+			  --Rnext|
+			--?"[*R:name]" -ne "NoRepeatingAttributeLoaded"|NPC_Action_Display
+
+			--+|[t width=100%  style="font-size:12px;"][tr][&SpaceCell][td][br][b][c]NPC Attacks[/c][/b][hr][&Multiattack_Text][&NPCActions][/td][&SpaceCell][/tr][tr][td colspan=3 height=5px][/td][/tr][/t]
+
+		--]|
+	--X|
+
+	--:ShowNPC_Image|Display_Type 
+		--~Display_Type|string;before;|;[&reentryval]
+		--#emoteState|no
+		--#title|Display Info
+		--#leftsub| 
+		--#rightsub| 
+		--#whisper|
+		--+|[t width=100%][tr][&SpaceCell][td][c][img height=200px width=200px ][*S:t-imgsrc][/img][/c][/td][&SpaceCell][/tr][/t]
+		--?"[&Display_Type]" -eqi "Detail"|[
+		--+|[t width=100%][tr][&SpaceCell][td][c][button]Show Image::[*S:t-imgsrc][/button][/c][/td][&SpaceCell][/tr][/t]
+		--]|
+	--X|
+	
+	--:NPC_Skill_Checks|
+		--#title|[*S:character_name]
+		--#leftsub|Skill Checks
+		--#rightsub|
+		--#bodyFontSize|14px
+		--+|[&SkillChk_BTNs]			
+		--+|[&ShowInfo_BTN]
+	--X|	
+	
+	--:NPC_Skill_Checks_B|
+		--#title|[*S:character_name]
+		--#leftsub|Skill Checks
+		--#rightsub|
+		--#bodyFontSize|14px
+		--+|[&SkillChk_BTNs_B]			
+		--+|[&ShowInfo_BTN]
+	--X|
+	
+	--:NPC_Ability_Check|Ability_Type 
+		--~Ability_Type|string;before;|;[&reentryval]
+		--#title|[*S:character_name]
+
+		--/|Assign Mods
+			--=Strength_bonus|[*S:strength_mod]
+			--=Dexterity_bonus|[*S:dexterity_mod]
+			--=Constitution_bonus|[*S:constitution_mod]
+			--=Intelligence_bonus|[*S:intelligence_mod]
+			--=Wisdom_bonus|[*S:wisdom_mod]
+			--=Charisma_bonus|[*S:charisma_mod]
+
+		--/|Type
+			--&Type|[&Ability_Type]
+			--#leftsub|[&Ability_Type]
+
+		--/|Set Bonus
+			--=BonusType|[$[&Type]_bonus]
+			--#rightsub| Skill Mod: [$BonusType]
+
+		--/|Roll
+			--=SaveA|1d20 + [$BonusType][Bonus]
+			--=SaveB|1d20 + [$BonusType][Bonus]
+
+		--#bodyFontSize|25px
+		--+|[t width=100%]
+				[tr]
+					[td width=45% height=60px][c][$SaveA][/c][/td]
+					[td width=10% height=60px][c]|[/c][/td]
+					[td width=45% height=60px][c][$SaveB][/c][/td]
+				[/tr]
+			[/t]
+		--+|[&ShowInfo_BTN]
+	--X|
+	
+	--:NPC_Save_Check|Save_Type 
+		--~Save_Type|string;before;|;[&reentryval]
+		--#title|[*S:character_name]
+
+		--/|Assign Mods
+			--?[*S:npc_str_save_flag] -gt 0|=Strength_Save_bonus;[*S:npc_str_save]|=Strength_Save_bonus;[*S:strength_mod]
+			--?[*S:npc_dex_save_flag] -gt 0|=Dexterity_Save_bonus;[*S:npc_dex_save]|=Dexterity_Save_bonus;[*S:dexterity_mod]
+			--?[*S:npc_con_save_flag] -gt 0|=Constitution_Save_bonus;[*S:npc_con_save]|=Constitution_Save_bonus;[*S:constitution_mod]
+			--?[*S:npc_int_save_flag] -gt 0|=Intelligence_Save_bonus;[*S:npc_int_save]|=Intelligence_Save_bonus;[*S:intelligence_mod]
+			--?[*S:npc_wis_save_flag] -gt 0|=Wisdom_Save_bonus;[*S:npc_wis_save]|=Wisdom_Save_bonus;[*S:wisdom_mod]
+			--?[*S:npc_cha_save_flag] -gt 0|=Charisma_Save_bonus;[*S:npc_cha_save]|=Charisma_Save_bonus;[*S:charisma_mod]
+			
+		--/|Type
+			--&Type|[&Save_Type]
+			--#leftsub|[&Save_Type]
+
+		--/|Set Bonus
+			--=BonusType|[$[&Type]_Save_bonus]
+			--#rightsub| Save Mod: [$BonusType]
+
+		--/|Roll
+			--=SaveA|1d20 + [$BonusType][Bonus]
+			--=SaveB|1d20 + [$BonusType][Bonus]
+
+		--#bodyFontSize|25px
+		--+|[t width=100%]
+				[tr]
+					[td width=45% height=60px][c][$SaveA][/c][/td]
+					[td width=10% height=60px][c]|[/c][/td]
+					[td width=45% height=60px][c][$SaveB][/c][/td]
+				[/tr]
+			[/t]			
+		--+|[&ShowInfo_BTN]
+	--X|	
+	
+	
+	--:NPC_Skill_Check|Skill_Type 
+		--~Skill_Type|string;before;|;[&reentryval]
+		--#title|[*S:character_name]
+
+		--/|Assign Mods
+			--?[*S:npc_survival_flag] -gt 0|=survival_Skill_bonus;[*S:npc_survival]|=survival_Skill_bonus;[*S:wisdom_mod]
+			--?[*S:npc_stealth_flag] -gt 0|=stealth_Skill_bonus;[*S:npc_stealth]|=stealth_Skill_bonus;[*S:dexterity_mod]
+			--?[*S:npc_sleight_of_hand_flag] -gt 0|=sleight_of_hand_Skill_bonus;[*S:npc_sleight_of_hand]|=sleight_of_hand_Skill_bonus;[*S:dexterity_mod]
+			--?[*S:npc_religion_flag] -gt 0|=religion_Skill_bonus;[*S:npc_religion]|=religion_Skill_bonus;[*S:intelligence_mod]
+			--?[*S:npc_persuasion_flag] -gt 0|=persuasion_Skill_bonus;[*S:npc_persuasion]|=persuasion_Skill_bonus;[*S:charisma_mod]
+			--?[*S:npc_performance_flag] -gt 0|=performance_Skill_bonus;[*S:npc_performance]|=performance_Skill_bonus;[*S:charisma_mod]
+			--?[*S:npc_perception_flag] -gt 0|=perception_Skill_bonus;[*S:npc_perception]|=perception_Skill_bonus;[*S:wisdom_mod]
+			--?[*S:npc_nature_flag] -gt 0|=nature_Skill_bonus;[*S:npc_nature]|=nature_Skill_bonus;[*S:intelligence_mod]
+			--?[*S:npc_medicine_flag] -gt 0|=medicine_Skill_bonus;[*S:npc_medicine]|=medicine_Skill_bonus;[*S:wisdom_mod]
+			--?[*S:npc_investigation_flag] -gt 0|=investigation_Skill_bonus;[*S:npc_investigation]|=investigation_Skill_bonus;[*S:intelligence_mod]
+			--?[*S:npc_intimidation_flag] -gt 0|=intimidation_Skill_bonus;[*S:npc_intimidation]|=intimidation_Skill_bonus;[*S:charisma_mod]
+			--?[*S:npc_insight_flag] -gt 0|=insight_Skill_bonus;[*S:npc_insight]|=insight_Skill_bonus;[*S:wisdom_mod]
+			--?[*S:npc_history_flag] -gt 0|=history_Skill_bonus;[*S:npc_history]|=history_Skill_bonus;[*S:intelligence_mod]
+			--?[*S:npc_deception_flag] -gt 0|=deception_Skill_bonus;[*S:npc_deception]|=deception_Skill_bonus;[*S:charisma_mod]
+			--?[*S:npc_athletics_flag] -gt 0|=athletics_Skill_bonus;[*S:npc_athletics]|=athletics_Skill_bonus;[*S:strength_mod]
+			--?[*S:npc_arcana_flag] -gt 0|=arcana_Skill_bonus;[*S:npc_arcana]|=arcana_Skill_bonus;[*S:intelligence_mod]
+			--?[*S:npc_animal_handling_flag] -gt 0|=animal_Skill_bonus;[*S:npc_animal_handling]|=animal_Skill_bonus;[*S:wisdom_mod]
+			--?[*S:npc_acrobatics_flag] -gt 0|=acrobatics_Skill_bonus;[*S:npc_acrobatics]|=acrobatics_Skill_bonus;[*S:dexterity_mod]
+			
+		--/|Type
+			--&Type|[&Skill_Type]
+			--#leftsub|[&Skill_Type]
+
+		--/|Set Bonus
+			--=BonusType|[$[&Type]_Skill_bonus]
+			--#rightsub| Skill Mod: [$BonusType]
+
+		--/|Roll
+			--=SaveA|1d20 + [$BonusType][Bonus]
+			--=SaveB|1d20 + [$BonusType][Bonus]
+
+		--#bodyFontSize|25px
+		--+|[t width=100%]
+				[tr]
+					[td width=45% height=60px][c][$SaveA][/c][/td]
+					[td width=10% height=60px][c]|[/c][/td]
+					[td width=45% height=60px][c][$SaveB][/c][/td]
+				[/tr]
+			[/t]			
+		--+|[&ShowInfo_BTN]
+	--X|
+}}
