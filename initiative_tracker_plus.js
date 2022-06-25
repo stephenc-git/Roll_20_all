@@ -16,7 +16,7 @@ var InitiativeTrackerPlus = (function() {
 	'use strict';
 	var version = 1.291,
 		author = 'James C. (Chuz) - Edits by Stephen C.',
-		lastUpdated = 'June 14 2022',
+		lastUpdated = 'June 25 2022',
 		pending = null;
 
 	var ITP_StateEnum = Object.freeze({
