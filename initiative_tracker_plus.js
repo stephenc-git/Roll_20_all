@@ -1450,7 +1450,7 @@ var InitiativeTrackerPlus = (function() {
 		if (!round)
 			{return;}
 		var disp = makeRoundDisplay(round);
-		sendPublic(disp);
+		sendPublic(disp,disp);
 	};
 
 
@@ -1467,7 +1467,7 @@ var InitiativeTrackerPlus = (function() {
 			disp += statusRiders.hidden;
 			sendFeedback(disp);
 		} else {
-			sendPublic(disp);
+			sendPublic(disp,disp);
 			if (statusRiders.hidden)
 				{sendFeedback(statusRiders.hidden);}
 		}
@@ -1491,18 +1491,15 @@ var InitiativeTrackerPlus = (function() {
 		var priorToken = getObj('graphic',priororder[0].id);
 
 		if (state.initiative_tracker_plus.config.flags.legendaryOn && getTokenControllers(priorToken)[0] !== '' ){
-			if (state.initiative_tracker_plus.config.legendaryActionSkip){
+			if (state.initiative_tracker_plus.config.legendaryActionSkip || state.initiative_tracker_plus.config.legendaryActionCurrentCount <=0){
 				state.initiative_tracker_plus.config.legendaryActionSkip = false;
-				//log("Skip Action for " + priorToken.get("name"));
 			} else {
-			log("Ask about action for " + priorToken.get("name") + (getTokenControllers(priorToken)[0] !== ''));
 				showLegendaryAlert();
 			turnorder = priororder;
 			turnorder = JSON.stringify(turnorder);
 			Campaign().set('turnorder',turnorder);
 			return;
 			}
-		//log("got out of legandarys" + state.initiative_tracker_plus.config.legendaryActionSkip);
 		}
 		var currentTurn = turnorder[0];
 		if (currentTurn) {
@@ -1581,6 +1578,9 @@ var InitiativeTrackerPlus = (function() {
 					},500);
 					// Manage status
 					// Announce Turn
+					if (state.initiative_tracker_plus.config.legendaryActionTokenid === curToken.get("_id")){
+						state.initiative_tracker_plus.config.legendaryActionCurrentCount = state.initiative_tracker_plus.config.legendaryActionMaxCount;
+					}
 					announceTurn(curToken,updateStatusDisplay(curToken));
 			}
 		}
@@ -1910,15 +1910,6 @@ var InitiativeTrackerPlus = (function() {
 					oldvalue = flags[p[0]];
 					flags[p[0]] = p[1];
 					state.initiative_tracker_plus.config.flags[p[0]] = p[1];
-					break;
-				case 'legendaryOn':
-					oldvalue = flags[p[0]];
-					flags[p[0]] = p[1];
-					state.initiative_tracker_plus.config.flags[p[0]] = p[1];
-					state.initiative_tracker_plus.config.legendaryActionSkip = false;
-					break;
-				case 'CMExit':
-					showCombatMenu();
 					break;
 				default:
 					break;
@@ -3108,20 +3099,23 @@ var InitiativeTrackerPlus = (function() {
 				+ '</tr>'
 				+ '</table>'
 				+ '</div>';
-		sendPublic(startCombatmsg);
+		sendPublic(startCombatmsg,startCombatmsg);
 	}
 
 	/**
 	 * Sort turn order Descending
 	 */
-	var doTurnorderSort = function(){
+	var doTurnorderSort = function(preserve){
+		let turnorder = JSON.parse(Campaign().get('turnorder'))
+		var curentFirst = turnorder[0];
 		// Parse the turnorder to an object, and sort it Descending.
-		let turnorder = JSON.parse(Campaign().get('turnorder')).sort((a,b) => { return b.pr - a.pr });   
+		turnorder.sort((a,b) => { return b.pr - a.pr });  
+		if(preserve){
+			let idx = turnorder.findIndex(e=>e===curentFirst);
+			turnorder = [...turnorder.slice(idx),...turnorder.slice(0,idx)];
+		  } 
 		// Set the new turnorder order.
 		Campaign().set('turnorder', JSON.stringify(turnorder));
-		//log(JSON.stringify(turnorder));
-		var displayTurnSort = 'Turn Order Sorted'
-		sendFeedback(displayTurnSort);				
 	}
 
 	/**
@@ -3140,9 +3134,9 @@ var InitiativeTrackerPlus = (function() {
 				{elem.remove();}
 		});
 		
-		fields.turnTokenids.forEach(function(tokinId){
-			var tokinObj = getObj('graphic',tokinId);
-			if (tokinObj){tokinObj.remove();}
+		fields.turnTokenids.forEach(function(TokenId){
+			var TokenObj = getObj('graphic',TokenId);
+			if (TokenObj){TokenObj.remove();}
 		})
 		fields.turnTokenids = [];
 		state.initiative_tracker_plus.config.fields.turnTokenids = [];
@@ -3158,7 +3152,11 @@ var InitiativeTrackerPlus = (function() {
 		state.initiative_tracker_plus.effects = {};
 		state.initiative_tracker_plus.statuses = [];
 		flags.legendaryOn = false;
+		state.initiative_tracker_plus.config.flags.legendaryOn = false;
 		state.initiative_tracker_plus.config.legendaryActionSkip = false;
+		state.initiative_tracker_plus.config.legendaryActionMaxCount = 0;
+		state.initiative_tracker_plus.config.legendaryActionCurrentCount = 0;
+		state.initiative_tracker_plus.config.legendaryActionTokenid = '';
 		Campaign().set('initiativepage', false);
 		var closeCombatmsg
 		closeCombatmsg = '<div style="background-color: '+design.turnbgcolor+'; color: '+design.turncolor+'; font-weight: bold; font-style: italic; border: 2px solid #000; box-shadow: rgba(0,0,0,0.4) 3px 3px; border-radius: 0.5em; text-align: center; min-height: 50px;">'
@@ -3174,7 +3172,7 @@ var InitiativeTrackerPlus = (function() {
 				+ '</table>'
 				+ '</div>';
 
-		sendPublic(closeCombatmsg);
+		sendPublic(closeCombatmsg,closeCombatmsg);
 	};
 
 	var doAddTurnentry = function(args,senderId){
@@ -3338,13 +3336,14 @@ var InitiativeTrackerPlus = (function() {
 		var numberDropDown = "&#124;?{Initiave?|25|24|23|22|21|20|19|18|17|16|16|15|14|13|13|12|11|10|9|8|7|6|5|4|3|2|1|0}"
 		var roundDropDown = "&#124;?{Round?|25|24|23|22|21|20|19|18|17|16|16|15|14|13|13|12|11|10|9|8|7|6|5|4|3|2|1|0}"
 		var eventShowToPlayers = "&#124;?{Show To Players?|False|True}"
+		var legendaryActionsDropDown = "lactions&#124;?{Legendary Actions?|1|2|3|4|5|}"
 		var content = '<div style="'+tshadow+' background-color: '+design.turnbgcolor+'; font-family: Helvetica,Arial,sans-serif; color: '+design.turncolor+'; border: 2px solid #000; box-shadow: rgba(0,0,0,0.4) 3px 3px; border-radius: 0.5em; text-align: center;">'
 			+ '<table width="100%">'
 			+ '<tr><td width="100%" align="center" valign="middle" style="font-weight: bold; font-style: italic;" >Combat Menu'+HR+'</td></tr>'
 			+ '<tr><td width="100%" align="right" >'
 			+ 'Reminder Turns: <a '+stylesmall+' background-color: #6FAEC7;" href="!itp -addturn &#124;?{Type of Turn?|Layer Action} '+numberDropDown+eventShowToPlayers+'">Add</a><br>'
 			+ 'Round Event: <a '+stylesmall+' background-color: #6FAEC7;" href="!itp -roundevent &#124;?{Name of Event?|Event} '+numberDropDown+roundDropDown+eventShowToPlayers+'">Add</a><br>'
-			+ 'legendary Actions: <a '+stylesmall+' background-color: '+(state.initiative_tracker_plus.config.flags.legendaryOn !== true ? 'red':'green')+';" href="!itp -setConfig legendaryOn|'+(state.initiative_tracker_plus.config.flags.legendaryOn !== true ? 'true':'false')+' CMExit|true ">'+(state.initiative_tracker_plus.config.flags.legendaryOn !== true ? 'Disabled' : 'Enabled')+'</a><br>'
+			+ 'legendary Actions: <a '+stylesmall+' background-color: '+(state.initiative_tracker_plus.config.flags.legendaryOn !== true ? 'red':'green')+';" href="!itp -setLegendary legendaryOn|'+(state.initiative_tracker_plus.config.flags.legendaryOn !== true ? 'true '+legendaryActionsDropDown+' reseton|&#64;{target|token_id}':'false ')+' ">'+(state.initiative_tracker_plus.config.flags.legendaryOn !== true ? 'Disabled' : 'Enabled')+'</a><br>'
 			+ 'Sort Turn Order: <a '+stylesmall+' background-color: #6FAEC7;" href="!itp -sortturnorder ">Set</a><br>'
 			+ '</td></tr>'
 			+ '<tr><td align="center">'
@@ -3355,17 +3354,45 @@ var InitiativeTrackerPlus = (function() {
 	}
 
 	var showLegendaryAlert = function(){
+		if (state.initiative_tracker_plus.config.legendaryActionTokenid !== ''){
+			var curToken = getObj('graphic',state.initiative_tracker_plus.config.legendaryActionTokenid);
+			var legendaryTokenName = '';
+			var legendaryTokenImg = '<div style="width:55px; height:55px; display:inline-block;"><img width="50px" height="50px" src="' + fields.feedbackImg + '"/></div>';
+
+			if (!curToken){
+
+			} else {
+				legendaryTokenImg = '<div style="width:55px; height:55px; display:inline-block;"><img width="50px" height="50px" src="' + curToken.get('imgsrc') + '"/></div>';
+				legendaryTokenName = curToken.get('name') + "<br/>"
+			}
+		}
 		var HR = '<hr style="background-color: '+design.turncolor+'; margin: 5px; border-width:0; color: #000000; height: 1px;"/>';
 		var tshadow = 'text-shadow: -1px -1px #222, 1px -1px #222, -1px 1px #222, 1px 1px #222 , 2px 2px #222;';
-		var stylesmall = 'style=" padding: 2px 3px 2px 3px; text-align:center; font-size: 9pt; width: 65px; height: 14px; color: '+design.turncolor+'; border: 1px solid black; margin: 1px;  border-radius: 4px;  box-shadow: 1px 1px 1px #707070;';
+		var stylesmall = 'style=" padding: 2px 8px 2px 8px; text-align:center; font-size: 9pt; width: 50px; height: 14px; color: '+design.turncolor+'; border: 1px solid black; margin: 1px;  border-radius: 4px;  box-shadow: 1px 1px 1px #707070;';
+
+		var threeLAbutton = '<a '+stylesmall+' height: 34px; background-color: red;" href="!itp -legendaryAction actions|3 " >Use<br/>3 Actions</a> ';
+		if (state.initiative_tracker_plus.config.legendaryActionCurrentCount - 3 < 0) {
+			threeLAbutton = '<div  '+stylesmall+'  display:inline-block; height: 34px; background-color: gray;" >Use<br/>3 Actions</div> ';
+		} 
+		var twoLAbutton = 	'<a '+stylesmall+' height: 34px; background-color: red;" href="!itp -legendaryAction actions|2 ">Use<br/>2 Actions</a> ';
+		if (state.initiative_tracker_plus.config.legendaryActionCurrentCount - 2 < 0) {
+			twoLAbutton = '<div  '+stylesmall+'  display:inline-block; height: 34px; background-color: gray;" >Use<br/>2 Actions</div> ';
+		}
+		var oneLAbutton = 	'<a '+stylesmall+' height: 34px; background-color: red;" href="!itp -legendaryAction actions|1 ">Use<br/>1 Action</a> ';
+		if (state.initiative_tracker_plus.config.legendaryActionCurrentCount - 1 < 0) {
+			oneLAbutton = '<div  '+stylesmall+'  display:inline-block; height: 34px; background-color: gray;" >Use<br/>1 Action</div> ';
+		}
+
 		var content = '<div style="'+tshadow+' background-color: '+design.turnbgcolor+'; font-family: Helvetica,Arial,sans-serif; color: '+design.turncolor+'; border: 2px solid #000; box-shadow: rgba(0,0,0,0.4) 3px 3px; border-radius: 0.5em; text-align: center;">'
 			+ '<table width="100%">'
-			+ '<tr><td width="100%" align="center" valign="middle" style="font-weight: bold; font-style: italic;" >Legendary Actions'+HR+'</td></tr>'
+			+ '<tr><td width="100%" align="center" valign="middle" style="height:80px; padding-left:50; font-weight: bold; font-style: italic;" >' +  legendaryTokenImg
+			+ '<div style="width:150px; height:35px; margin:auto; display:inline-block;">' + legendaryTokenName + 'Legendary Actions</div>'+HR+'</td></tr>'
 			+ '<tr><td width="100%" align="right" >'
-			+ 'Legendary Actions Left: <a '+stylesmall+' background-color: green;" href="#" >5</a><br>'
+			+ 'Legendary Actions: <span '+stylesmall+' background-color: green; display:inline-block;">'+state.initiative_tracker_plus.config.legendaryActionCurrentCount + ' of ' + state.initiative_tracker_plus.config.legendaryActionMaxCount + '</span><br>'
 			+ '</td></tr>'
 			+ '<tr><td align="center">'
-			+ HR+'<a '+stylesmall+' background-color: green; width:150px;"  href="!itp -legendarySkip ">Skip</a><br/><a '+stylesmall+' background-color: red;" href="!itp -legendarySkip ">1 Action</a> <a '+stylesmall+' background-color: red;" href="!itp -legendarySkip ">2 Actions</a> <a '+stylesmall+' background-color: red;" href="!itp -legendarySkip ">3 Action</a>'
+			+ HR+ oneLAbutton + twoLAbutton+ threeLAbutton
+			+ '<br/><a '+stylesmall+' margin-top: 5px; padding-top: 6px; background-color: green; width:90%; height:20px;"  href="!itp -legendarySkip ">Skip</a>'
 			+ '</td></tr></table></div>';
 		sendFeedback(content);	
 	}
@@ -3596,19 +3623,30 @@ var InitiativeTrackerPlus = (function() {
 	/**
 	 * Send public message
 	 */
-	var sendPublic = function(msg) {
-		var allOnlinePlayers = findObjs({
-			_type: "player",
-			_online: true,
-		});
-		//_.each(allOnlinePlayers, function(obj){
+	var sendPublic = function(msg,gmmsg) {
+		if (!msg) {
+			return undefined;
+		};
+		if (gmmsg === msg){
+			var content = '/desc ' + msg;
+			sendChat('',content,null,(flags.archive ? {noarchive:true}:null));
+		} else {
+			var allOnlinePlayers = findObjs({
+				_type: "player",
+				_online: true,
+			});
+			_.each(allOnlinePlayers, function(obj){
 
-		if (!msg)
-			{return undefined;}
-		var content = '/desc ' + msg;
-		//var content = '/w ' + obj.get("_displayname") + ' ' + msg
-		sendChat('',content,null,(flags.archive ? {noarchive:true}:null));
-		//});
+				if (playerIsGM(obj.get("id"))){
+					var content = '/w gm ' + msg
+					sendChat(fields.feedbackName,content,null,(flags.archive ? {noarchive:true}:null));
+				} else {
+					//var content = '/desc ' + msg;
+					var content = '/w "' + obj.get("_displayname") + '" ' + msg
+					sendChat(fields.feedbackName,content,null,(flags.archive ? {noarchive:true}:null));
+				}
+			});
+		}
 		
 	};
 
@@ -3663,7 +3701,39 @@ var InitiativeTrackerPlus = (function() {
 		sendFeedback('<span style="color: red; font-weight: bold;">'+msg+'</span>');
 	};
 
+	var dolegendaryActions = function(args){
+		var pairs = args.split(' ');
+		pairs.forEach(pair => {
+			// p[0] == var, p[1] == value
+			var p = pair.split('|');
 
+			// fix the value if it's 'true' or 'false'
+			if(p[1] === 'true') {
+				p[1] = true;
+			}
+			if(p[1] === 'false') {
+				p[1] = false;
+			}
+			if (p[0] === 'legendaryOn' && !p[1]){
+				//Turn off Legendary Actions
+				state.initiative_tracker_plus.config.flags.legendaryOn = false;
+				state.initiative_tracker_plus.config.legendaryActionSkip = false;
+				state.initiative_tracker_plus.config.legendaryActionMaxCount = 0;
+				state.initiative_tracker_plus.config.legendaryActionCurrentCount = 0;
+				state.initiative_tracker_plus.config.legendaryActionTokenid = '';
+				return;								
+			} else if (p[0] === 'legendaryOn' && p[1]){
+				//Turn on Legendary Actions
+				state.initiative_tracker_plus.config.flags.legendaryOn = true;
+				state.initiative_tracker_plus.config.legendaryActionSkip = false;
+			} else if (p[0] === 'lactions' && !isNaN(parseInt(p[1],10)) && state.initiative_tracker_plus.config.flags.legendaryOn){
+				state.initiative_tracker_plus.config.legendaryActionMaxCount = parseInt(p[1],10);
+				state.initiative_tracker_plus.config.legendaryActionCurrentCount = parseInt(p[1],10);
+			}else if (p[0] === 'reseton' && p[1] !=='' && state.initiative_tracker_plus.config.flags.legendaryOn){				
+				state.initiative_tracker_plus.config.legendaryActionTokenid = p[1];
+			}
+		});
+	};
 
 	/**
 	 * Handle chat message event
@@ -3677,7 +3747,7 @@ var InitiativeTrackerPlus = (function() {
 		&& playerIsGM(senderId)
 		&& args.indexOf('!itp') === 0) {
 			args = args.replace('!itp','').trim();
-			//log(args);
+			log(args);
 			if (args.indexOf('-start') === 0) {
 				doStartTracker();
 			} else if (args.indexOf('-combatmenu') === 0){
@@ -3694,7 +3764,20 @@ var InitiativeTrackerPlus = (function() {
 			} else if (args.indexOf('-legendarySkip') === 0){
 				state.initiative_tracker_plus.config.legendaryActionSkip = true;
 				doPlayerAdvanceTurn(senderId);
-			}  else if (args.indexOf('-stop') === 0) {
+			} else if (args.indexOf('-setLegendary') === 0){
+				args = args.replace('-setLegendary','').trim();
+				dolegendaryActions(args);
+				log(state.initiative_tracker_plus.config.flags.legendaryOn + ' ' + state.initiative_tracker_plus.config.legendaryActionSkip + ' ' + state.initiative_tracker_plus.config.legendaryActionMaxCount + ' ' + state.initiative_tracker_plus.config.legendaryActionCurrentCount + ' ' + state.initiative_tracker_plus.config.legendaryActionTokenid);
+				showCombatMenu();
+			} else if (args.indexOf('-legendaryAction') === 0){
+				args = args.replace('-legendaryAction','').trim();
+				var lActions = args.split('|');
+				if (!isNaN(parseInt(lActions[1].trim()))){ 
+					state.initiative_tracker_plus.config.legendaryActionCurrentCount = state.initiative_tracker_plus.config.legendaryActionCurrentCount - parseInt(lActions[1].trim());
+					state.initiative_tracker_plus.config.legendaryActionSkip = true;
+				}				
+				doPlayerAdvanceTurn(senderId);
+			} else if (args.indexOf('-stop') === 0) {
 				doStopTracker();
 			} else if (args.indexOf('-pause') === 0) {
 				doPauseTracker();
@@ -3804,6 +3887,7 @@ var InitiativeTrackerPlus = (function() {
 	 * Handle turn order change event
 	 */
 	var handleChangeCampaignTurnorder = function(obj,prev) {
+		doTurnorderSort(true);
 		handleAdvanceTurn(obj.get('turnorder'),prev.turnorder);
 	};
 
