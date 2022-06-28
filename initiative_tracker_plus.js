@@ -14,9 +14,9 @@
 var statusMarkers = [];
 var InitiativeTrackerPlus = (function() {
 	'use strict';
-	var version = 1.291,
+	var version = 1.292,
 		author = 'James C. (Chuz) - Edits by Stephen C.',
-		lastUpdated = 'June 25 2022',
+		lastUpdated = 'June 28 2022',
 		pending = null;
 
 	var ITP_StateEnum = Object.freeze({
@@ -615,7 +615,6 @@ var InitiativeTrackerPlus = (function() {
 
 			if (_.isUndefined(tokenStatusString) || tokenStatusString === 'undefined') {
 				log('Unable to get status string for ' + e + ' status string is ' + tokenStatusString);
-//				return;
 			}
 
 			if(tokenStatusString != '') {
@@ -1029,7 +1028,6 @@ var InitiativeTrackerPlus = (function() {
 			pseudonym = characterObjExists('itp_pseudonym', 'attribute', journal.get('_id'));
 			name = characterObjExists('name','attribute',journal.get('_id'));
 			showTokenName = curToken.get('showplayers_name');
-//log(showTokenName);
 			if (!showTokenName){
 				name = '';
 			} else if(pseudonym) {
@@ -1857,11 +1855,8 @@ var InitiativeTrackerPlus = (function() {
 	 */
 	var setConfigVariable = function(args) {
 		var pairs = args.split(' ');
-		//log(pairs);
 		pairs.forEach(function(pair) {
-			// p[0] == var, p[1] == value
 			var p = pair.split('|');
-
 			// fix the value if it's 'true' or 'false'
 			if(p[1] === 'true') {
 				p[1] = true;
@@ -3203,9 +3198,6 @@ var InitiativeTrackerPlus = (function() {
 		Campaign().set("turnorder", JSON.stringify(turnorder));
 		fields.turnTokenids.push(Newtoken.get("_id"));
 		state.initiative_tracker_plus.config.fields.turnTokenids = fields.turnTokenids;
-
-		//log(fields.turnTokenids);
-
 	}
 
 	var doRoundEvententry = function(args,senderId){
@@ -3238,9 +3230,6 @@ var InitiativeTrackerPlus = (function() {
 		Campaign().set("turnorder", JSON.stringify(turnorder));
 		fields.turnTokenids.push(Newtoken.get("_id"));
 		state.initiative_tracker_plus.config.fields.turnTokenids = fields.turnTokenids;
-
-		//log(fields.turnTokenids);
-
 	}
 
 
@@ -3349,7 +3338,6 @@ var InitiativeTrackerPlus = (function() {
 			+ '<tr><td align="center">'
 			+ HR+'<a '+stylelarge+' background-color: green;" href="!itp -begincombat ">Begin</a> <a '+stylelarge+' background-color: red;" href="!itp -clear ">End</a>'
 			+ '</td></tr></table></div>';
-			log(state.initiative_tracker_plus.config.flags.legendaryOn);
 		sendFeedback(content);	
 	}
 
@@ -3575,7 +3563,7 @@ var InitiativeTrackerPlus = (function() {
 						+ 'Changes various configuration values.  Permitted keys and what they expect for values are:<br>'
 						+ 'Usage: <b>!itp -setConfig rotation:false</b>'
 						+ '<ul>'
-							+ "<li><b>trackerImgRatio</b> [2.25] - a decimal number, how much larger than the token it's highlighting that the turn indicator should be</li>"
+							+ "<li><b>trackerImgRatio</b> [2.25]  - a decimal number, how much larger than the token it's highlighting that the turn indicator should be</li>"
 							+ "<li><b>rotation_degree</b> [15] - an integer number, how many degrees per step of the indicator animation that it rotates.</li>"
 							+ "<li><b>rotation_rate</b> [250] - an integer number, how many milliseconds between frames of the animation, smaller numbers are a faster animation but will load down roll20 more.</li>"
 							+ "<li><b>round_separator_initiative</b> [-100] - an integer number, displays the 'initiative' for the round separator 100 will put it at the top of the round, -100 will put it at the bottom of the round.</li>"
@@ -3747,7 +3735,6 @@ var InitiativeTrackerPlus = (function() {
 		&& playerIsGM(senderId)
 		&& args.indexOf('!itp') === 0) {
 			args = args.replace('!itp','').trim();
-			log(args);
 			if (args.indexOf('-start') === 0) {
 				doStartTracker();
 			} else if (args.indexOf('-combatmenu') === 0){
@@ -3767,7 +3754,6 @@ var InitiativeTrackerPlus = (function() {
 			} else if (args.indexOf('-setLegendary') === 0){
 				args = args.replace('-setLegendary','').trim();
 				dolegendaryActions(args);
-				log(state.initiative_tracker_plus.config.flags.legendaryOn + ' ' + state.initiative_tracker_plus.config.legendaryActionSkip + ' ' + state.initiative_tracker_plus.config.legendaryActionMaxCount + ' ' + state.initiative_tracker_plus.config.legendaryActionCurrentCount + ' ' + state.initiative_tracker_plus.config.legendaryActionTokenid);
 				showCombatMenu();
 			} else if (args.indexOf('-legendaryAction') === 0){
 				args = args.replace('-legendaryAction','').trim();
@@ -3894,7 +3880,6 @@ var InitiativeTrackerPlus = (function() {
 
 
 	var handleChangeCampaignInitativepage = function(obj,prev) {
-		log(flags.clearonclose);
 		if (obj.get('initiativepage')) {
 			prepareTurnorder(obj.get('turnorder'));
 		} else {
@@ -3966,7 +3951,6 @@ var InitiativeTrackerPlus = (function() {
 
 on("ready", function() {
 	'use strict';
-	//log('-=> IT+ Loading Markers... <=-');
 	const tokenMarkers = JSON.parse(Campaign().get("token_markers"));
 	const getMarkersFromCampaign = markers => {
 		var tms = [];
@@ -3977,7 +3961,6 @@ on("ready", function() {
 			marker.urlName = marker.tag.toLowerCase().replace('::', '~dc~');	// blindness~dc~1234567
 			marker.name = marker.tag;									// blindness::
 			tms.push(marker);
-			//log(marker);
 		});
 
 		return tms;
